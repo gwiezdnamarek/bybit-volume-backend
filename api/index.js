@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const BybitSimpleTracker = require('../src/bybit-simple-tracker');
+const BinanceScalper = require('../src/binance-scalper');
 
 const app = express();
-const tracker = new BybitSimpleTracker();
+const tracker = new BinanceScalper();
 
 app.use(express.json());
 
