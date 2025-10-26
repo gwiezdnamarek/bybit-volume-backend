@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const BinanceScalperFixed = require('../src/binance-scalper-fixed');
+const BinanceWithProxy = require('../src/binance-with-proxy');
 
 const app = express();
-const tracker = new BinanceScalperFixed();
+const tracker = new BinanceWithProxy();
 
 app.use(express.json());
 
@@ -79,7 +79,7 @@ app.get('/', (req, res) => {
             <div class="header">
                 <h1>📊 Volume Tracker - NEAR/USDT</h1>
                 <div class="price" id="currentPrice">$--</div>
-                <div class="source-badge">🔥 AKTUALNE DANE BYBIT API</div>
+                <div class="source-badge">🔥 AKTUALNE DANE BINANCE API</div>
             </div>
 
             <div class="ratio-display">
@@ -123,7 +123,7 @@ app.get('/', (req, res) => {
             </div>
 
             <div class="info">
-                <div>Źródło: <span id="dataSource">Bybit Real API</span></div>
+                <div>Źródło: <span id="dataSource">Binance API</span></div>
                 <div>Następne odświeżenie za: <span id="countdown">30</span> sekund</div>
                 <div id="lastUpdate">Ostatnia aktualizacja: --</div>
                 <div id="status" style="margin-top: 10px; font-weight: bold;"></div>
@@ -250,3 +250,4 @@ app.get('/', (req, res) => {
 
 // EKSPORT dla Vercel - BEZ app.listen!
 module.exports = app;
+// Last update: niedz. 26 paź 2025 20:30:58 CET - Using BinanceWithProxy with CORS proxy
