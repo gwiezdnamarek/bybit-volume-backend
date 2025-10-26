@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const BinanceScalper = require('../src/binance-scalper');
+const BinanceScalperFixed = require('../src/binance-scalper-fixed');
 
 const app = express();
-const tracker = new BinanceScalper();
+const tracker = new BinanceScalperFixed();
 
 app.use(express.json());
 
