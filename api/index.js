@@ -21,7 +21,7 @@ app.get('/api/volume/near', async (req, res) => {
             });
         }
         
-        console.log('🔄 Pobieram aktualne dane z Bybit...');
+        console.log('🔄 Pobieram aktualne dane z Binance...');
         const data = await tracker.getAllTimeframes('NEARUSDT');
         
         cachedData = {
@@ -29,7 +29,7 @@ app.get('/api/volume/near', async (req, res) => {
             symbol: 'NEAR/USDT',
             data: data,
             timestamp: new Date().toISOString(),
-            note: 'AKTUALNE DANE LONG/SHORT Z BYBIT API'
+            note: 'AKTUALNE DANE PRICE.VOLUME Z BINANCE API'
         };
         lastUpdate = Date.now();
         
@@ -185,15 +185,129 @@ app.get('/', (req, res) => {
                 const data = currentData[currentTimeframe];
                 
                 // Aktualne dane
-                document.getElementById('currentPrice').textContent = '$' + data.price;
-                document.getElementById('longRatio').textContent = (data.data.trend === "UP" ? "🟢 BULLISH" : "🔴 BEARISH").toFixed(1) + '%';
-                document.getElementById('shortRatio').textContent = (data.data.volumeSpike ? "📈 HIGH" : "📉 NORMAL").toFixed(1) + '%';
-                document.getElementById('longVolume').textContent = Math.round(data.longVolume).toLocaleString() + ' NEAR';
-                document.getElementById('shortVolume').textContent = Math.round(data.shortVolume).toLocaleString() + ' NEAR';
+                document.getElementById('currentPrice').textContent = '
+
+                // Wykres ceny i volume
+                if (volumeChart) volumeChart.destroy();
+                const volumeCtx = document.getElementById('volumeChart').getContext('2d');
+                volumeChart = new Chart(volumeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Price', 'Volume'],
+                        datasets: [{
+                            label: 'Metrics - ' + currentTimeframe,
+                            data: [data.price, data.volume / 1000], // Volume podzielone przez 1000 dla skali
+                            backgroundColor: ['#007bff', '#28a745']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Price & Volume - ' + currentTimeframe,
+                                color: 'white',
+                                font: { size: 16 }
+                            },
+                            legend: {
+                                labels: { color: 'white' }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: 'white' },
+                                grid: { color: '#2a2e35' },
+                                title: {
+                                    display: true,
+                                    text: 'Price ($) / Volume (K)',
+                                    color: 'white'
+                                }
+                            },
+                            x: {
+                                ticks: { color: 'white' },
+                                grid: { color: '#2a2e35' }
+                            }
+                        }
+                    }
+                });
+            }
+        </script>
+    </body>
+    </html>
+    `;
+    res.send(html);
+});
+
+// EKSPORT dla Vercel - BEZ app.listen!
+module.exports = app;
+// Last update: niedz. 26 paź 2025 20:30:58 CET - Using SimpleBinanceTracker with CORS proxy
+ + data.price;
+                document.getElementById('longRatio').textContent = data.trend === "UP" ? "🟢 BULLISH" : "🔴 BEARISH";
+                document.getElementById('shortRatio').textContent = data.volumeSpike ? "📈 HIGH VOLUME" : "📉 NORMAL VOLUME";
+                document.getElementById('longVolume').textContent = data.priceChange;
+                document.getElementById('shortVolume').textContent = data.volumeChange || '--';
                 
                 // Data cards
-                document.getElementById('volumeNear').textContent = Math.round(data.totalVolume).toLocaleString() + ' NEAR';
-                document.getElementById('volumeUSDT').textContent = '$' + Math.round(data.totalVolume * data.price).toLocaleString();
+                document.getElementById('volumeNear').textContent = Math.round(data.volume).toLocaleString() + ' NEAR';
+                document.getElementById('volumeUSDT').textContent = '
+
+                // Pojedynczy wykres słupkowy dla aktualnego timeframe'u
+                if (volumeChart) volumeChart.destroy();
+                const volumeCtx = document.getElementById('volumeChart').getContext('2d');
+                volumeChart = new Chart(volumeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Long Volume', 'Short Volume'],
+                        datasets: [{
+                            label: 'Volume NEAR - ' + currentTimeframe,
+                            data: [data.longVolume, data.shortVolume],
+                            backgroundColor: ['#28a745', '#dc3545']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Aktualny Volume Long/Short - ' + currentTimeframe,
+                                color: 'white',
+                                font: { size: 16 }
+                            },
+                            legend: {
+                                labels: { color: 'white' }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: 'white' },
+                                grid: { color: '#2a2e35' },
+                                title: {
+                                    display: true,
+                                    text: 'Volume (NEAR)',
+                                    color: 'white'
+                                }
+                            },
+                            x: {
+                                ticks: { color: 'white' },
+                                grid: { color: '#2a2e35' }
+                            }
+                        }
+                    }
+                });
+            }
+        </script>
+    </body>
+    </html>
+    `;
+    res.send(html);
+});
+
+// EKSPORT dla Vercel - BEZ app.listen!
+module.exports = app;
+// Last update: niedz. 26 paź 2025 20:30:58 CET - Using SimpleBinanceTracker with CORS proxy
+ + Math.round(data.volume * data.price).toLocaleString();
                 document.getElementById('timeframe').textContent = data.interval;
 
                 // Pojedynczy wykres słupkowy dla aktualnego timeframe'u
