@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const TestDataTracker = require('../src/test-data-tracker');
+const RealBinanceTracker = require('../src/real-binance-tracker');
 
 const app = express();
-const tracker = new TestDataTracker();
+const tracker = new RealBinanceTracker();
 
 app.use(express.json());
 
@@ -28,7 +28,7 @@ app.get('/api/volume/near', async (req, res) => {
             symbol: 'NEAR/USDT',
             data: data,
             timestamp: new Date().toISOString(),
-            note: 'TEST DATA - DEVELOPMENT'
+            note: 'REAL BINANCE DATA'
         };
         lastUpdate = Date.now();
         
@@ -62,7 +62,7 @@ app.get('/', (req, res) => {
         <div class="container">
             <div class="header">
                 <h1>📊 Volume Tracker - NEAR/USDT</h1>
-                <div>TEST DATA - DEVELOPMENT MODE</div>
+                <div>REAL BINANCE DATA MODE</div>
             </div>
             
             <div id="timeframes">Ładowanie...</div>
