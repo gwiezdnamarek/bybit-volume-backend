@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const BinanceWithProxy = require('../src/binance-with-proxy');
+const SimpleBinanceTracker = require('../src/simple-binance-tracker');
 
 const app = express();
-const tracker = new BinanceWithProxy();
+const tracker = new SimpleBinanceTracker();
 
 app.use(express.json());
 
@@ -84,12 +84,12 @@ app.get('/', (req, res) => {
 
             <div class="ratio-display">
                 <div class="ratio-box long">
-                    <div style="font-size: 18px;">LONG POSITIONS</div>
+                    <div style="font-size: 18px;">PRICE TREND</div>
                     <div class="ratio-value" id="longRatio">--%</div>
                     <div id="longVolume">-- NEAR</div>
                 </div>
                 <div class="ratio-box short">
-                    <div style="font-size: 18px;">SHORT POSITIONS</div>
+                    <div style="font-size: 18px;">VOLUME</div>
                     <div class="ratio-value" id="shortRatio">--%</div>
                     <div id="shortVolume">-- NEAR</div>
                 </div>
@@ -186,8 +186,8 @@ app.get('/', (req, res) => {
                 
                 // Aktualne dane
                 document.getElementById('currentPrice').textContent = '$' + data.price;
-                document.getElementById('longRatio').textContent = (data.longRatio * 100).toFixed(1) + '%';
-                document.getElementById('shortRatio').textContent = (data.shortRatio * 100).toFixed(1) + '%';
+                document.getElementById('longRatio').textContent = (data.data.trend === "UP" ? "🟢 BULLISH" : "🔴 BEARISH").toFixed(1) + '%';
+                document.getElementById('shortRatio').textContent = (data.data.volumeSpike ? "📈 HIGH" : "📉 NORMAL").toFixed(1) + '%';
                 document.getElementById('longVolume').textContent = Math.round(data.longVolume).toLocaleString() + ' NEAR';
                 document.getElementById('shortVolume').textContent = Math.round(data.shortVolume).toLocaleString() + ' NEAR';
                 
@@ -250,4 +250,4 @@ app.get('/', (req, res) => {
 
 // EKSPORT dla Vercel - BEZ app.listen!
 module.exports = app;
-// Last update: niedz. 26 paź 2025 20:30:58 CET - Using BinanceWithProxy with CORS proxy
+// Last update: niedz. 26 paź 2025 20:30:58 CET - Using SimpleBinanceTracker with CORS proxy
